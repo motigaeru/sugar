@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-class BookmarkScreen extends StatelessWidget {
-  const BookmarkScreen({Key? key}) : super(key: key);
+class warningScreen extends StatelessWidget {
+  const warningScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.green, 
         title: const Text('警告'),
       ),
       body: const Center(

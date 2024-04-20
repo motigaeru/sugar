@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'src/screens/account.dart';
+import 'src/screens/Foodlist.dart';
 import 'src/screens/warning.dart';
 import 'src/screens/home.dart';
 import 'src/screens/note-taking camera.dart';
@@ -29,9 +29,9 @@ class MyStatefulWidget extends StatefulWidget {
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   static const _screens = [
     HomeScreen(),
-    BookmarkScreen(),
-    NotificationScreen(),
-    AccountScreen()
+    warningScreen(),
+    cameraScreen(),
+    FoodlistScreen()
   ];
 
   int _selectedIndex = 0;
@@ -52,10 +52,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'ホーム'),
             BottomNavigationBarItem(
-              icon: Icon(Icons.error), label: '警告', ),
+              icon: Icon(Icons.error), label: '危険リスト', ),
             BottomNavigationBarItem(
                 icon: Icon(Icons.camera), label: 'カメラ'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'アカウント'),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'リスト'),
           ],
           type: BottomNavigationBarType.fixed,
         ));
