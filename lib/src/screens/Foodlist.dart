@@ -6,6 +6,15 @@ class FoodlistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 仮の食品リスト
+    List<String> foods = [
+      'りんご',
+      'バナナ',
+      'オレンジ',
+      'いちご',
+      'ブルーベリー',
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('食べた食品一覧'),
@@ -23,7 +32,25 @@ class FoodlistScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: const Center(child: Text('食べた食品一覧', style: TextStyle(fontSize: 32.0))),
+      body: ListView.builder(
+        itemCount: foods.length * 2 - 1, // アイテムと境界線の数を計算
+        itemBuilder: (context, index) {
+          if (index.isOdd) {
+            // 奇数番目の場合は境界線を返す
+            return Divider(
+              color: Colors.grey, // 境界線の色を設定
+              height: 1, // 境界線の高さを設定
+            );
+          } else {
+            // 偶数番目の場合はリストアイテムを返す
+            final itemIndex = index ~/ 2; // リストアイテムのインデックスを計算
+            return ListTile(
+              title: Text(foods[itemIndex]),
+              // タップしたときの処理を追加する場合はここに追記
+            );
+          }
+        },
+      ),
     );
   }
 }

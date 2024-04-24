@@ -14,4 +14,4 @@ class warningScreen extends StatelessWidget {
           child: Text('警告画面', style: TextStyle(fontSize: 32.0))),
     );
   }
-}
+}          
