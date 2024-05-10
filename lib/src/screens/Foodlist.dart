@@ -1,20 +1,38 @@
 import 'package:flutter/material.dart';
-import 'Food Entry.dart'; // FoodEntry クラスが定義されているファイルのインポートを追加
+import 'Food Entry.dart'; 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FoodlistScreen extends StatelessWidget {
+final foodword = StateProvider((ref) {
+  return 'リンゴ';
+});
+class FoodlistScreen extends StatefulWidget {
   const FoodlistScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    // 仮の食品リスト
-    List<String> foods = [
-      'りんご',
-      'バナナ',
-      'オレンジ',
-      'いちご',
-      'ブルーベリー',
-    ];
+  _FoodlistScreenState createState() => _FoodlistScreenState();
+}
 
+class riverpodcl extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final String value = ref.watch(foodword);
+
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Text(value),
+        ),
+      ),
+    );
+  }
+}
+
+class _FoodlistScreenState extends State<FoodlistScreen> {
+  
+  var food = [];
+
+  @override
+  Widget build(BuildContext context, ) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('食べた食品一覧'),
@@ -22,35 +40,64 @@ class FoodlistScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () {
+            onPressed: () async {
               // プラスボタンが押されたときの処理
-              Navigator.push(
+              final result = await Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => FoodEntry()), // FoodEntry 画面に遷移
               );
+
+              if (result != null) {
+                // 追加された食品名がある場合のみリストに追加する
+                setState(() {
+                  food.add(result);
+                });
+              }
             },
           ),
         ],
       ),
       body: ListView.builder(
-        itemCount: foods.length * 2 - 1, // アイテムと境界線の数を計算
+        itemCount: food.length,
         itemBuilder: (context, index) {
-          if (index.isOdd) {
-            // 奇数番目の場合は境界線を返す
-            return Divider(
-              color: Colors.grey, // 境界線の色を設定
-              height: 1, // 境界線の高さを設定
-            );
-          } else {
-            // 偶数番目の場合はリストアイテムを返す
-            final itemIndex = index ~/ 2; // リストアイテムのインデックスを計算
-            return ListTile(
-              title: Text(foods[itemIndex]),
-              // タップしたときの処理を追加する場合はここに追記
-            );
-          }
+          return ListTile(
+            title: Text(food[index]),
+            // 長押ししたときの処理を追加
+            onLongPress: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('削除の確認'),
+                  content: Text('${food[index]} を削除しますか？'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        // ダイアログを閉じる
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('キャンセル'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        // リストから要素を削除
+                        setState(() {
+                          food.removeAt(index);
+                        });
+                        // ダイアログを閉じる
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('削除'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
         },
       ),
     );
   }
 }
+
+
+

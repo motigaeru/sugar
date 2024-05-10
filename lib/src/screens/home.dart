@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final strProvider = Provider((ref) {
+  return 'Hello';
+});
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -16,9 +20,6 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-final strProvider = Provider((ref) {
-  return 'Hello';
-});
 
 class RiverpodSample extends ConsumerWidget {
   const RiverpodSample({Key? key}) : super(key: key);
