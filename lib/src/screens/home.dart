@@ -1,45 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:io';
 
-final strProvider = Provider((ref) {
-  return 'Hello';
-});
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const RiverpodSample(),
-    );
-  }
+class  HomeScreen extends StatefulWidget {
+ const  HomeScreen({Key? key}) : super(key: key);
+ @override
+ _MyHomePageState createState() => _MyHomePageState();
 }
 
+class _MyHomePageState extends State {
+ File? image;
+ final picker = ImagePicker();
 
-class RiverpodSample extends ConsumerWidget {
-  const RiverpodSample({Key? key}) : super(key: key);
-@override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final value = ref.watch(strProvider);
+ Future getImage() async {
+   final XFile? _image = await picker.pickImage(source: ImageSource.gallery);
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.green, 
-        title: const Text('ホーム'),
-      ),
-      body: Center(
-        child: Text(
-          value,
-          style: const TextStyle(
-              fontSize: 24
-          ),
-        ),
-      ),
-    );
-  }
+   setState(() {
+     if (_image != null) {
+       image = File(_image.path);
+     }
+   });
+ }
+
+ @override
+ Widget build(BuildContext context) {
+   return Scaffold(
+     appBar: AppBar(
+       title: const Text('アルバムから画像を読み込む'),
+     ),
+     body: Center(
+       child: image == null ?
+         const Text('画像がありません') 
+         : Image.file(image!, fit: BoxFit.cover),
+     ),
+     floatingActionButton: FloatingActionButton(
+       onPressed: () async{
+         getImage();
+       },
+       child: const Icon(Icons.photo),
+     ),
+   );
+ }
 }
