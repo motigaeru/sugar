@@ -8,10 +8,10 @@ class cameraScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green, 
-        title: const Text('カメラ'),
+        title: const Text('プロフィール'),
       ),
       body:
-          const Center(child: Text('カメラ画面', style: TextStyle(fontSize: 32.0))),
+          const Center(child: Text('プロフィール画面', style: TextStyle(fontSize: 32.0))),
     );
   }
 }

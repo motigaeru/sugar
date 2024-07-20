@@ -1,89 +1,99 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'Food Entry.dart'; 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'FoodEntry.dart';
+import 'food_provider.dart';
 
-final foodword = StateProvider((ref) {
-  return 'リンゴ';
-});
-class FoodlistScreen extends StatefulWidget {
+class FoodlistScreen extends ConsumerWidget {
   const FoodlistScreen({Key? key}) : super(key: key);
 
   @override
-  _FoodlistScreenState createState() => _FoodlistScreenState();
-}
-
-class riverpodcl extends ConsumerWidget {
-  @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final String value = ref.watch(foodword);
+    final foodList = ref.watch(foodProvider);
 
-    return MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text(value),
+    void _showImbalanceAlert() {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('カテゴリーの偏り'),
+          content: Text('特定のカテゴリーの項目が他よりも多くなっています。'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
         ),
-      ),
-    );
-  }
-}
+      );
+    }
 
-class _FoodlistScreenState extends State<FoodlistScreen> {
-  
-  var food = [];
+    ref.listen<List<Food>>(foodProvider, (_, state) {
+      final Map<int, int> categoryCounts = {};
+      for (var food in state) {
+        categoryCounts[food.category] = (categoryCounts[food.category] ?? 0) + 1;
+      }
 
-  @override
-  Widget build(BuildContext context, ) {
+      final int maxCount = categoryCounts.values.reduce((a, b) => a > b ? a : b);
+      final int minCount = categoryCounts.values.reduce((a, b) => a < b ? a : b);
+
+      if (maxCount > minCount + 5) {  // 偏りの閾値を 5 としていますが、必要に応じて調整可能
+        _showImbalanceAlert();
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('食べた食品一覧'),
-        backgroundColor: Colors.green, // 上の帯の色を緑色に設定
+        backgroundColor: Colors.green,
         actions: [
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () async {
-              // プラスボタンが押されたときの処理
               final result = await Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FoodEntry()), // FoodEntry 画面に遷移
+                MaterialPageRoute(builder: (context) => FoodEntry()),
               );
 
-              if (result != null) {
-                // 追加された食品名がある場合のみリストに追加する
-                setState(() {
-                  food.add(result);
-                });
+              if (result != null && result is Map<String, dynamic>) {
+                final newFood = Food(
+                  result['name'],
+                  result['image'],
+                  result['category'],
+                );
+                ref.read(foodProvider.notifier).addFood(newFood);
               }
             },
           ),
         ],
       ),
       body: ListView.builder(
-        itemCount: food.length,
+        itemCount: foodList.length,
         itemBuilder: (context, index) {
+          final food = foodList[index];
           return ListTile(
-            title: Text(food[index]),
-            // 長押ししたときの処理を追加
+            leading: food.image.isNotEmpty
+                ? Image.file(File(food.image), width: 50, height: 50, fit: BoxFit.cover)
+                : Icon(Icons.image, size: 50, color: Colors.grey),
+            title: Text(food.name),
+            subtitle: Text(_categoryToString(food.category)),
             onLongPress: () {
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
                   title: Text('削除の確認'),
-                  content: Text('${food[index]} を削除しますか？'),
+                  content: Text('${food.name} を削除しますか？'),
                   actions: <Widget>[
                     TextButton(
                       onPressed: () {
-                        // ダイアログを閉じる
                         Navigator.of(context).pop();
                       },
                       child: Text('キャンセル'),
                     ),
                     TextButton(
                       onPressed: () {
-                        // リストから要素を削除
-                        setState(() {
-                          food.removeAt(index);
-                        });
-                        // ダイアログを閉じる
+                        ref.read(foodProvider.notifier).removeFood(index);
                         Navigator.of(context).pop();
                       },
                       child: Text('削除'),
@@ -97,7 +107,19 @@ class _FoodlistScreenState extends State<FoodlistScreen> {
       ),
     );
   }
+
+  String _categoryToString(int category) {
+    switch (category) {
+      case 0:
+        return '野菜';
+      case 1:
+        return '肉';
+      case 2:
+        return '魚';
+      case 3:
+        return 'その他';
+      default:
+        return '不明';
+    }
+  }
 }
-
-
-

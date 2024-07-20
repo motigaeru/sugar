@@ -31,7 +31,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     HomeScreen(),
     warningScreen(),
     cameraScreen(),
-    FoodlistScreen()
+    FoodlistScreen(),
   ];
 
   int _selectedIndex = 0;

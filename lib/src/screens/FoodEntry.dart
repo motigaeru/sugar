@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class FoodEntry extends StatefulWidget {
   const FoodEntry({Key? key}) : super(key: key);
@@ -10,6 +12,27 @@ class FoodEntry extends StatefulWidget {
 class _FoodEntryState extends State<FoodEntry> {
   String _foodName = '';
   String _imageUrl = '';
+  int _selectedCategory = 0;  // Default category
+
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _imageUrl = image.path;
+      });
+    }
+  }
+
+  List<DropdownMenuItem<int>> get _dropdownItems {
+    return [
+      DropdownMenuItem(value: 0, child: Text('野菜')),
+      DropdownMenuItem(value: 1, child: Text('肉')),
+      DropdownMenuItem(value: 2, child: Text('魚')),
+      DropdownMenuItem(value: 3, child: Text('その他')),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,23 +42,25 @@ class _FoodEntryState extends State<FoodEntry> {
         title: const Text('食品入力'),
         actions: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0), // ボタンの周囲に余白を追加
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: IconButton(
               onPressed: () {
-                // ここで入力された食品名を追加する
                 if (_foodName.isNotEmpty) {
-                  // 入力された食品名が空でない場合のみ追加する
-                  Navigator.pop(context, _foodName); // 入力画面を閉じる
+                  Navigator.pop(context, {
+                    'name': _foodName,
+                    'image': _imageUrl,
+                    'category': _selectedCategory
+                  });
                 }
               },
-              icon: const Icon(Icons.add), // アイコンをプラスアイコンに変更
-              iconSize: 32.0, // アイコンのサイズを大きくする
+              icon: const Icon(Icons.add),
+              iconSize: 32.0,
             ),
           ),
         ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0), // 上下左右に20の余白を追加
+        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -61,7 +86,7 @@ class _FoodEntryState extends State<FoodEntry> {
                 ],
               ),
             ),
-            SizedBox(height: 20.0), // スペースを追加
+            SizedBox(height: 20.0),
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
               child: Column(
@@ -71,35 +96,45 @@ class _FoodEntryState extends State<FoodEntry> {
                     '写真',
                     style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                   ),
-                  // 灰色の長方形を表示する
                   Container(
-                    height: 150, // 画像の高さに応じて調整してください
+                    height: 150,
                     color: Colors.grey[300],
                     alignment: Alignment.center,
                     child: _imageUrl.isNotEmpty
-                        ? Image.network(_imageUrl)
+                        ? Image.file(File(_imageUrl))
                         : Icon(Icons.image, size: 50, color: Colors.grey),
                   ),
-                  SizedBox(height: 10), // スペースを追加
+                  SizedBox(height: 10),
                   ElevatedButton(
-                    onPressed: () {
-                      // ここで画像の選択を処理する
-                      // 例えば、画像を選択して _imageUrl を更新する処理を実装することができます
-                    },
+                    onPressed: _pickImage,
                     child: Text('写真を選択'),
                   ),
                 ],
               ),
             ),
+            SizedBox(height: 20.0),
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    'カテゴリ',
+                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  ),
+                  DropdownButton<int>(
+                    value: _selectedCategory,
+                    items: _dropdownItems,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedCategory = value!;
+                      });
+                    },
+                  ),
                 ],
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).viewInsets.bottom), // キーボードの高さ分のスペースを追加
+            SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
           ],
         ),
       ),
