@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'src/screens/Foodlist.dart';
 import 'src/screens/warning.dart';
 import 'src/screens/home.dart';
-import 'src/screens/note-taking camera.dart';
+import 'src/screens/Profile page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -30,7 +30,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   static const _screens = [
     HomeScreen(),
     warningScreen(),
-    cameraScreen(),
+    ProfilePage(),
     FoodlistScreen(),
   ];
 
@@ -54,8 +54,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             BottomNavigationBarItem(
               icon: Icon(Icons.error), label: '危険リスト', ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.camera), label: 'カメラ'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'リスト'),
+                icon: Icon(Icons.person), label: 'プロフィール'),
+            BottomNavigationBarItem(icon: Icon(Icons.folder), label: 'リスト'),
           ],
           type: BottomNavigationBarType.fixed,
         ));

@@ -43,7 +43,9 @@ dependencies:
   image_picker: ^1.1.2
   provider: ^6.1.2
   shared_preferences: ^2.0.13
-
+  pie_chart: ^5.4.0
+  firebase_core: "^2.0.0"
+  firebase_auth: "^4.0.0"
 dev_dependencies:
   flutter_test:
     sdk: flutter

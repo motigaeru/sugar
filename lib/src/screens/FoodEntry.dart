@@ -27,10 +27,10 @@ class _FoodEntryState extends State<FoodEntry> {
 
   List<DropdownMenuItem<int>> get _dropdownItems {
     return [
-      DropdownMenuItem(value: 0, child: Text('野菜')),
-      DropdownMenuItem(value: 1, child: Text('肉')),
-      DropdownMenuItem(value: 2, child: Text('魚')),
-      DropdownMenuItem(value: 3, child: Text('その他')),
+      const DropdownMenuItem(value: 0, child: Text('野菜')),
+      const DropdownMenuItem(value: 1, child: Text('肉')),
+      const DropdownMenuItem(value: 2, child: Text('魚')),
+      const DropdownMenuItem(value: 3, child: Text('その他')),
     ];
   }
 
@@ -60,7 +60,7 @@ class _FoodEntryState extends State<FoodEntry> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -69,7 +69,7 @@ class _FoodEntryState extends State<FoodEntry> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     '食品名',
                     style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                   ),
@@ -86,13 +86,13 @@ class _FoodEntryState extends State<FoodEntry> {
                 ],
               ),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     '写真',
                     style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                   ),
@@ -102,23 +102,23 @@ class _FoodEntryState extends State<FoodEntry> {
                     alignment: Alignment.center,
                     child: _imageUrl.isNotEmpty
                         ? Image.file(File(_imageUrl))
-                        : Icon(Icons.image, size: 50, color: Colors.grey),
+                        : const Icon(Icons.image, size: 50, color: Colors.grey),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: _pickImage,
-                    child: Text('写真を選択'),
+                    child: const Text('写真を選択'),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'カテゴリ',
                     style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                   ),
