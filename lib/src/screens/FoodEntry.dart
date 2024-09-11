@@ -38,8 +38,11 @@ class _FoodEntryState extends State<FoodEntry> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: const Text('食品入力'),
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: const Text('食品入力'),
+        ),
+        backgroundColor: const Color.fromARGB(208, 9, 84, 3),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -55,6 +58,7 @@ class _FoodEntryState extends State<FoodEntry> {
               },
               icon: const Icon(Icons.add),
               iconSize: 32.0,
+              color: Colors.yellowAccent, // Brighter color
             ),
           ),
         ],
@@ -64,80 +68,62 @@ class _FoodEntryState extends State<FoodEntry> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '食品名',
-                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                  ),
-                  TextField(
-                    onChanged: (value) {
-                      setState(() {
-                        _foodName = value;
-                      });
-                    },
-                    decoration: const InputDecoration(
-                      hintText: '食品名を入力してください',
-                    ),
-                  ),
-                ],
+            _buildSectionTitle('食品名'),
+            TextField(
+              onChanged: (value) {
+                setState(() {
+                  _foodName = value;
+                });
+              },
+              decoration: const InputDecoration(
+                hintText: '食品名を入力してください',
+                border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 20.0),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '写真',
-                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                  ),
-                  Container(
-                    height: 150,
-                    color: Colors.grey[300],
-                    alignment: Alignment.center,
-                    child: _imageUrl.isNotEmpty
-                        ? Image.file(File(_imageUrl))
-                        : const Icon(Icons.image, size: 50, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: _pickImage,
-                    child: const Text('写真を選択'),
-                  ),
-                ],
-              ),
+            _buildSectionTitle('写真'),
+            _buildImagePicker(),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: _pickImage,
+              style: ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(255, 255, 255, 255)),
+              child: const Text('写真を選択'),
             ),
             const SizedBox(height: 20.0),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'カテゴリ',
-                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                  ),
-                  DropdownButton<int>(
-                    value: _selectedCategory,
-                    items: _dropdownItems,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedCategory = value!;
-                      });
-                    },
-                  ),
-                ],
-              ),
+            _buildSectionTitle('カテゴリ'),
+            DropdownButton<int>(
+              value: _selectedCategory,
+              items: _dropdownItems,
+              onChanged: (value) {
+                setState(() {
+                  _selectedCategory = value!;
+                });
+              },
             ),
-            SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Text(
+        title,
+        style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _buildImagePicker() {
+    return Container(
+      height: 150,
+      color: Colors.grey[300],
+      alignment: Alignment.center,
+      child: _imageUrl.isNotEmpty
+          ? Image.file(File(_imageUrl))
+          : const Icon(Icons.image, size: 50, color: Colors.grey),
     );
   }
 }

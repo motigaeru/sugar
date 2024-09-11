@@ -194,7 +194,7 @@ class _ProfilePageState extends State<ProfilePage> {
           alignment: Alignment.centerLeft,
           child: const Text('プロフィール'),
         ),
-        backgroundColor: Colors.green,
+        backgroundColor: const Color.fromARGB(255, 227, 227, 23),
         actions: [
           if (_isLoggedIn)
             IconButton(

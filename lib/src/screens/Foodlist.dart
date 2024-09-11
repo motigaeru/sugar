@@ -48,16 +48,16 @@ class FoodlistScreen extends ConsumerWidget {
       }
     });
 
-    // Filtered list based on selected category
+    // カテゴリーフィルターに基づいてリストをフィルタリング
     final filteredFoodList = foodList.where((food) {
-      if (selectedCategory == 4) return true; // 4 means "Show all"
+      if (selectedCategory == 4) return true; // 4 は「すべて表示」
       return food.category == selectedCategory;
     }).toList();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('食べた食品一覧'),
-        backgroundColor: Colors.teal,
+        backgroundColor: const Color.fromRGBO(188, 84, 24, 1),
         actions: [
           PopupMenuButton<int>(
             onSelected: (value) {
@@ -104,20 +104,20 @@ class FoodlistScreen extends ConsumerWidget {
                 final food = filteredFoodList[index];
                 return Card(
                   margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  color: _categoryColor(food.category),
+                  color: _getCategoryColor(food.category), // 色分けを修正
                   child: ListTile(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                     leading: _buildLeadingImage(food.image),
                     title: Text(
                       food.name,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white), // テキスト色も変更
                     ),
                     subtitle: Text(
                       _categoryToString(food.category),
-                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                      style: TextStyle(fontSize: 14, color: Colors.white70), // サブテキストも色を変更
                     ),
                     trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
+                      icon: const Icon(Icons.delete, color: Colors.white), // アイコン色も変更
                       onPressed: () {
                         _showDeleteConfirmation(context, ref, food, index);
                       },
@@ -129,21 +129,23 @@ class FoodlistScreen extends ConsumerWidget {
     );
   }
 
-  Color _categoryColor(int category) {
+  // ホーム画面と同じカテゴリーに基づく色分けを適用
+  Color _getCategoryColor(int category) {
     switch (category) {
       case 0:
-        return Colors.green[100]!;
+        return Colors.green; // 野菜
       case 1:
-        return Colors.red[100]!;
+        return Colors.red;   // 肉
       case 2:
-        return Colors.blue[100]!;
+        return Colors.blue;  // 魚
       case 3:
-        return Colors.grey[200]!;
+        return Colors.orange; // その他
       default:
-        return Colors.white;
+        return Colors.grey;  // 不明なカテゴリー
     }
   }
 
+  // リストのサムネイルを表示
   Widget _buildLeadingImage(String imagePath) {
     if (imagePath.isNotEmpty && File(imagePath).existsSync()) {
       return SizedBox(
@@ -164,6 +166,7 @@ class FoodlistScreen extends ConsumerWidget {
     }
   }
 
+  // 削除確認ダイアログの表示
   void _showDeleteConfirmation(BuildContext context, WidgetRef ref, Food food, int index) {
     showDialog(
       context: context,
@@ -189,6 +192,7 @@ class FoodlistScreen extends ConsumerWidget {
     );
   }
 
+  // カテゴリーIDからカテゴリー名に変換
   String _categoryToString(int category) {
     switch (category) {
       case 0:
@@ -205,4 +209,4 @@ class FoodlistScreen extends ConsumerWidget {
   }
 }
 
-final categoryFilterProvider = StateProvider<int>((ref) => 4); // Default to showing all items
+final categoryFilterProvider = StateProvider<int>((ref) => 4); // デフォルトは「すべて表示」

@@ -29,8 +29,8 @@ class MyStatefulWidget extends StatefulWidget {
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   static const _screens = [
     HomeScreen(),
-    warningScreen(),
     ProfilePage(),
+    warningScreen(),
     FoodlistScreen(),
   ];
 
@@ -52,9 +52,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'ホーム'),
             BottomNavigationBarItem(
-              icon: Icon(Icons.error), label: '危険リスト', ),
-            BottomNavigationBarItem(
                 icon: Icon(Icons.person), label: 'プロフィール'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.error), label: '危険リスト', ),
             BottomNavigationBarItem(icon: Icon(Icons.folder), label: 'リスト'),
           ],
           type: BottomNavigationBarType.fixed,

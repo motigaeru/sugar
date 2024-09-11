@@ -45,7 +45,7 @@ class HomeScreen extends ConsumerWidget {
           alignment: Alignment.centerLeft,
           child: const Text('プロフィール'),
         ),
-        backgroundColor: Colors.green,
+        backgroundColor: const Color.fromRGBO(188, 84, 24, 1),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -102,46 +102,49 @@ class HomeScreen extends ConsumerWidget {
                 itemCount: foodList.length,
                 itemBuilder: (context, index) {
                   final food = foodList[index];
-                  return ListTile(
-                    leading: SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: food.image.isNotEmpty && File(food.image).existsSync()
-                          ? Image.file(File(food.image), fit: BoxFit.cover)
-                          : const Icon(Icons.image, size: 50, color: Colors.grey),
+                  return Card(
+                    color: _getCategoryColor(food.category), // 色分けを追加
+                    child: ListTile(
+                      leading: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: food.image.isNotEmpty && File(food.image).existsSync()
+                            ? Image.file(File(food.image), fit: BoxFit.cover)
+                            : const Icon(Icons.image, size: 50, color: Colors.grey),
+                      ),
+                      title: Text(
+                        food.name,
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white), // 色を変更
+                      ),
+                      subtitle: Text(
+                        _categoryToString(food.category),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white70), // 色を変更
+                      ),
+                      onLongPress: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('削除の確認', style: Theme.of(context).textTheme.bodyLarge),
+                            content: Text('${food.name} を削除しますか？', style: Theme.of(context).textTheme.bodyLarge),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('キャンセル', style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.teal)),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  ref.read(foodProvider.notifier).removeFood(index);
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('削除', style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.red)),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
-                    title: Text(
-                      food.name,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    subtitle: Text(
-                      _categoryToString(food.category),
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    onLongPress: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text('削除の確認', style: Theme.of(context).textTheme.bodyLarge),
-                          content: Text('${food.name} を削除しますか？', style: Theme.of(context).textTheme.bodyLarge),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('キャンセル', style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.teal)),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                ref.read(foodProvider.notifier).removeFood(index);
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('削除', style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.red)),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
                   );
                 },
               ),
@@ -150,6 +153,22 @@ class HomeScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  // カテゴリーごとの色分けを設定する関数
+  Color _getCategoryColor(int category) {
+    switch (category) {
+      case 0:
+        return Colors.green; // 野菜
+      case 1:
+        return Colors.red;   // 肉
+      case 2:
+        return Colors.blue;  // 魚
+      case 3:
+        return Colors.orange; // その他
+      default:
+        return Colors.grey;  // 不明
+    }
   }
 
   String _categoryToString(int category) {
